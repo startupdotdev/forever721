@@ -1,3 +1,6 @@
-test("asdfasdf", () => {
-  expect(1).toBe(2);
+import { analyzeMetadata } from "./index";
+
+test("asdfasdf", async () => {
+  let result = await analyzeMetadata("ahhh");
+  expect(result).toBe(false);
 });
