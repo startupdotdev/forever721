@@ -1,0 +1,22 @@
+{
+  "name": "forever721",
+  "version": "1.0.0",
+  "description": "Analyze NFT metadata",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/startupdotdev/forever721.git"
+  },
+  "keywords": [
+    "nft"
+  ],
+  "author": "@startupdeotdev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/startupdotdev/forever721/issues"
+  },
+  "homepage": "https://github.com/startupdotdev/forever721#readme"
+}
