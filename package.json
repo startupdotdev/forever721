@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/startupdotdev/forever721/issues"
   },
-  "homepage": "https://github.com/startupdotdev/forever721#readme"
+  "homepage": "https://github.com/startupdotdev/forever721#readme",
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
 }
