@@ -1,4 +1,4 @@
-enum GradeLetter {
+export enum GradeLetter {
   A = "A",
   B = "B",
   C = "C",
@@ -6,22 +6,12 @@ enum GradeLetter {
   F = "F",
 }
 
-interface Grade {
-  grade: GradeLetter;
-  reasons: Reason[];
-}
-
-enum Severity {
+export enum Severity {
   Critical = -3,
   Bad = -1,
   Notice = 0,
   Good = 1,
   Great = 2,
-}
-
-interface Reason {
-  severity: Severity;
-  message: string;
 }
 
 const analyzeMetadata = async (tokenUri: string): Promise<Grade> => {
