@@ -1,33 +1,29 @@
-export enum GradeLetter {
-  A = "A",
-  B = "B",
-  C = "C",
-  D = "D",
-  F = "F",
-}
+import { GradeLetter } from "./constants/enums";
+import * as Reasons from "./constants/reasons";
 
-export enum Severity {
-  Critical = -3,
-  Bad = -1,
-  Notice = 0,
-  Good = 1,
-  Great = 2,
-}
+const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
+  let reasons: Reason[] = [];
 
-const analyzeMetadata = async (tokenUri: string): Promise<Grade> => {
+  if (tokenUri.startsWith("data:application/json;base64")) {
+    reasons = [...reasons, Reasons.metadataOnChain];
+  }
+
+  const encodedData: string = tokenUri.split("data:application/json;base64")[1];
+  const decodedBuffer: Buffer = Buffer.from(encodedData, "base64");
+  const decodedString: string = decodedBuffer.toString();
+  const json: Metadata = JSON.parse(decodedString);
+
+  // todo: what if no image?
+  const imageAttribute = json.image || "";
+
+  if (imageAttribute.startsWith("data:image")) {
+    reasons = [...reasons, Reasons.imageOnChain];
+  }
+
   return await {
     grade: GradeLetter.F,
-    reasons: [
-      {
-        severity: Severity.Critical,
-        message: "EMOTIONAL",
-      },
-      {
-        severity: Severity.Critical,
-        message: "DAMAGE",
-      },
-    ],
+    reasons: reasons,
   };
 };
 
-export { analyzeMetadata };
+export { analyzeTokenUri };
