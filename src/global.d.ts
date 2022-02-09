@@ -7,3 +7,7 @@ interface Reason {
   severity: Severity;
   message: string;
 }
+
+interface Metadata {
+  image?: string;
+}
