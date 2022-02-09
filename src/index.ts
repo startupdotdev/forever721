@@ -1,4 +1,4 @@
-import { GradeLetter } from "./constants/enums";
+import { GradeLetter, Severity } from "./constants/enums";
 import * as Reasons from "./constants/reasons";
 
 const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
@@ -20,8 +20,27 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
     reasons = [...reasons, Reasons.imageOnChain];
   }
 
+  const scoreSum: number = reasons
+    .map((reason) => reason.severity)
+    .reduce((a, b) => a + b);
+  const score: number = scoreSum / reasons.length;
+
+  let grade;
+
+  if (score >= Severity.Great) {
+    grade = GradeLetter.A;
+  } else if (score >= Severity.Good) {
+    grade = GradeLetter.B;
+  } else if (score >= Severity.Notice) {
+    grade = GradeLetter.C;
+  } else if (score >= Severity.Bad) {
+    grade = GradeLetter.D;
+  } else {
+    grade = GradeLetter.F;
+  }
+
   return await {
-    grade: GradeLetter.F,
+    grade: grade,
     reasons: reasons,
   };
 };
