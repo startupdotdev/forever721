@@ -13,9 +13,24 @@ let metaData : JSON | ipfs url | url;
 analyzeMetadata(metaData);
 ```
 
+Handled metadata structures:
+
+- [ ] Top-level IPFS
+- [ ] Top-level base64 encoded json
+- [ ] Top-level some random server
+- [ ] Top-level JSON
+
+Within each top-level data structure, handle:
+
+- [ ] URLs with IPFS
+- [ ] URLs not IPFS
+
 ## Development
 
-TODO
+```
+$ npm i
+$ npm test
+```
 
 ## Contributing
 
