@@ -5,6 +5,10 @@ export const isTokenUriBase64Json = (tokenUri: string): boolean => {
   return tokenUri.startsWith("data:application/json;base64");
 };
 
+export const isTokenUriIpfs = (tokenUri: string): boolean => {
+  return tokenUri.startsWith("ipfs");
+};
+
 export const handleBase64Json = (tokenUri: string): Reason[] => {
   let reasons: Reason[] = [Reasons.metadataOnChain];
 
@@ -28,10 +32,11 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
 
   if (isTokenUriBase64Json(tokenUri)) {
     reasons = handleBase64Json(tokenUri);
-  } else {
-    // TODO Make else throw an error
-    // Just IPFS atm
+  } else if (isTokenUriIpfs(tokenUri)) {
     reasons = [Reasons.tokenUriIsIPFS];
+  } else {
+    // TODO: test
+    throw "No supported type found";
   }
 
   const scoreSum: number = reasons.reduce((acc, { severity }) => {
