@@ -23,8 +23,6 @@ describe("All on chain", () => {
       (reason) => reason.id === imageOnChain.id
     );
 
-    console.log(reason2);
-
     expect(reason1).toMatchObject(metadataOnChain);
     expect(reason2).toMatchObject(imageOnChain);
   });
