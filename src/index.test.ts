@@ -55,3 +55,9 @@ describe("IPFS token URI", () => {
     expect(reason).toMatchObject(tokenUriIsIPFS);
   });
 });
+
+describe("No matching formats found", () => {
+  test("TokenUri passed that doesn't match supported format", async () => {
+    await expect(analyzeTokenUri("lazy://falcon.club")).rejects.toThrow();
+  });
+});

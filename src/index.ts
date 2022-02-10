@@ -35,8 +35,7 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   } else if (isTokenUriIpfs(tokenUri)) {
     reasons = [Reasons.tokenUriIsIPFS];
   } else {
-    // TODO: test
-    throw "No supported type found";
+    throw new Error("Type not supported");
   }
 
   const scoreSum: number = reasons.reduce((acc, { severity }) => {
