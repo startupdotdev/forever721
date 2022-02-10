@@ -10,12 +10,12 @@ import { analyzeTokenUri, isTokenUriBase64Json } from "./index";
 import { ALL_ON_CHAIN } from "../tests/fixtures/sample_token_uris";
 
 describe("#isTokenUriBase64Json", () => {
-  test("valid base4", async () => {
+  test("valid base64", async () => {
     expect(
       isTokenUriBase64Json("data:application/json;base64asdlfkjasdlkfjasdf=")
     ).toBe(true);
   });
-  test("invalid base4", async () => {
+  test("invalid base64", async () => {
     expect(
       isTokenUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
     ).toBe(false);

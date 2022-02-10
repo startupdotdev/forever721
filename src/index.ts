@@ -35,7 +35,7 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   } else if (isTokenUriIpfs(tokenUri)) {
     reasons = [Reasons.tokenUriIsIpfs];
   } else {
-    throw new Error("Type not supported");
+    throw new Error("Token URI format not supported");
   }
 
   const scoreSum: number = reasons.reduce((acc, { severity }) => {
