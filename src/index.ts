@@ -9,6 +9,10 @@ export const isTokenUriIpfs = (tokenUri: string): boolean => {
   return tokenUri.startsWith("ipfs");
 };
 
+export const isTokenUriHttp = (tokenUri: string): boolean => {
+  return tokenUri.startsWith("http");
+};
+
 export const handleBase64Json = (tokenUri: string): Reason[] => {
   let reasons: Reason[] = [Reasons.metadataOnChain];
 
@@ -34,6 +38,8 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
     reasons = handleBase64Json(tokenUri);
   } else if (isTokenUriIpfs(tokenUri)) {
     reasons = [Reasons.tokenUriIsIpfs];
+  } else if (isTokenUriHttp(tokenUri)) {
+    reasons = [Reasons.tokenUriIsHttp];
   } else {
     throw new Error("Token URI format not supported");
   }
