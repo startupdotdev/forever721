@@ -4,6 +4,7 @@ interface Grade {
 }
 
 interface Reason {
+  id: string;
   severity: Severity;
   message: string;
 }

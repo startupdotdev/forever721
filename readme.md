@@ -15,8 +15,8 @@ analyzeMetadata(metaData);
 
 Handled metadata structures:
 
-- [ ] Top-level IPFS
-- [ ] Top-level base64 encoded json
+- [x] Top-level IPFS
+- [x] Top-level base64 encoded json
 - [ ] Top-level some random server
 - [ ] Top-level JSON
 
@@ -31,6 +31,10 @@ Within each top-level data structure, handle:
 $ npm i
 $ npm test
 ```
+
+## Questions
+
+- Can we know if an IPFS item is pinned?
 
 ## Contributing
 
