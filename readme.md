@@ -17,7 +17,7 @@ Handled metadata structures:
 
 - [x] Top-level IPFS
 - [x] Top-level base64 encoded json
-- [ ] Top-level some random server
+- [x] Top-level some random server
 - [ ] Top-level JSON
 
 Within each top-level data structure, handle:

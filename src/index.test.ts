@@ -3,9 +3,10 @@ import {
   imageOnChain,
   metadataOnChain,
   tokenUriIsIpfs,
+  tokenUriIsHttp,
 } from "./constants/reasons";
 
-import { analyzeTokenUri, isTokenUriBase64Json } from "./index";
+import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
 
 import { ALL_ON_CHAIN } from "../tests/fixtures/sample_token_uris";
 
@@ -19,6 +20,18 @@ describe("#isTokenUriBase64Json", () => {
     expect(
       isTokenUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
     ).toBe(false);
+  });
+});
+
+describe("#isTokenUriHttp", () => {
+  test("valid http", async () => {
+    expect(isTokenUriHttp("http://lazy.llamas")).toBe(true);
+    expect(isTokenUriHttp("https://lazy.llamas")).toBe(true);
+  });
+  test("invalid http", async () => {
+    expect(isTokenUriHttp("ftp://something")).toBe(false);
+    expect(isTokenUriHttp("ipfs://somethingalsdkfjas/1234")).toBe(false);
+    expect(isTokenUriHttp("data:application/json;base64hotdog=")).toBe(false);
   });
 });
 
@@ -41,7 +54,7 @@ describe("All on chain", () => {
   });
 });
 
-describe("IPFS token URI", () => {
+describe("IPFS tokenURI", () => {
   test("IPFS url as the top level", async () => {
     let result = await analyzeTokenUri("ipfs://bafybeic26wp7ck2/1234");
 
@@ -53,6 +66,20 @@ describe("IPFS token URI", () => {
     );
 
     expect(reason).toMatchObject(tokenUriIsIpfs);
+  });
+});
+
+describe("Random URL for tokenURI", () => {
+  test("Random URL at top level results in poor grad", async () => {
+    let result = await analyzeTokenUri("https://lazy.llamas/449");
+    expect(result.reasons.length).toEqual(1);
+
+    const reason = result.reasons.find(
+      (reason) => reason.id === tokenUriIsHttp.id
+    );
+
+    expect(result.grade).toBe(GradeLetter.F);
+    expect(reason).toMatchObject(tokenUriIsHttp);
   });
 });
 

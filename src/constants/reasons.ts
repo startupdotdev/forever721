@@ -18,4 +18,10 @@ const tokenUriIsIpfs: Reason = {
   message: "TokenURI is hosted on IPFS",
 };
 
-export { imageOnChain, metadataOnChain, tokenUriIsIpfs };
+const tokenUriIsHttp: Reason = {
+  id: "token-uri-is-http",
+  severity: Severity.Critical,
+  message: "TokenURI is hosted on a private server over HTTP",
+};
+
+export { imageOnChain, metadataOnChain, tokenUriIsIpfs, tokenUriIsHttp };
