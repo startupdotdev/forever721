@@ -1,14 +1,21 @@
 import { GradeLetter, Severity } from "./constants/enums";
 import {
   imageOnChain,
+  imageUriIsHttp,
   metadataOnChain,
-  tokenUriIsIpfs,
   tokenUriIsHttp,
+  tokenUriIsIpfs,
 } from "./constants/reasons";
 
 import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
 
-import { ALL_ON_CHAIN } from "../tests/fixtures/sample_token_uris";
+import {
+  ALL_ON_CHAIN,
+  HTTP_WITH_HTTP_RESPONSE,
+} from "../tests/fixtures/sample_token_uris";
+
+import axios from "axios";
+jest.mock("axios");
 
 describe("#isTokenUriBase64Json", () => {
   test("valid base64", async () => {
@@ -69,17 +76,27 @@ describe("IPFS tokenURI", () => {
   });
 });
 
-describe("Random URL for tokenURI", () => {
+describe("HTTP link for tokenURI", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   test("Random URL at top level results in poor grad", async () => {
+    // @ts-ignore
+    axios.get.mockResolvedValueOnce(HTTP_WITH_HTTP_RESPONSE);
     let result = await analyzeTokenUri("https://lazy.llamas/449");
-    expect(result.reasons.length).toEqual(1);
+    expect(result.reasons.length).toEqual(2);
+    expect(axios.get).toHaveBeenCalledWith("https://lazy.llamas/449");
+    expect(result.grade).toBe(GradeLetter.F);
 
-    const reason = result.reasons.find(
+    let reason1 = result.reasons.find(
       (reason) => reason.id === tokenUriIsHttp.id
     );
+    expect(reason1).toMatchObject(tokenUriIsHttp);
 
-    expect(result.grade).toBe(GradeLetter.F);
-    expect(reason).toMatchObject(tokenUriIsHttp);
+    let reason2 = result.reasons.find(
+      (reason) => reason.id === imageUriIsHttp.id
+    );
+    expect(reason2).toMatchObject(imageUriIsHttp);
   });
 });
 

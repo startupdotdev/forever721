@@ -1,5 +1,6 @@
 import { GradeLetter, Severity } from "./constants/enums";
 import * as Reasons from "./constants/reasons";
+import axios from "axios";
 
 export const isTokenUriBase64Json = (tokenUri: string): boolean => {
   return tokenUri.startsWith("data:application/json;base64");
@@ -31,6 +32,19 @@ export const handleBase64Json = (tokenUri: string): Reason[] => {
   return reasons;
 };
 
+export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
+  let reasons: Reason[] = [Reasons.tokenUriIsHttp];
+
+  let res: Metadata = await axios.get(tokenUri);
+
+  console.log(res);
+  if (res.image && isTokenUriHttp(res.image)) {
+    reasons = [...reasons, Reasons.imageUriIsHttp];
+  }
+
+  return reasons;
+};
+
 const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   let reasons: Reason[] = [];
 
@@ -39,7 +53,7 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   } else if (isTokenUriIpfs(tokenUri)) {
     reasons = [Reasons.tokenUriIsIpfs];
   } else if (isTokenUriHttp(tokenUri)) {
-    reasons = [Reasons.tokenUriIsHttp];
+    reasons = await handleHttp(tokenUri);
   } else {
     throw new Error("Token URI format not supported");
   }

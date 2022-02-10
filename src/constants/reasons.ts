@@ -24,4 +24,16 @@ const tokenUriIsHttp: Reason = {
   message: "TokenURI is hosted on a private server over HTTP",
 };
 
-export { imageOnChain, metadataOnChain, tokenUriIsIpfs, tokenUriIsHttp };
+const imageUriIsHttp: Reason = {
+  id: "image-uri-is-http",
+  severity: Severity.Critical,
+  message: "imageURI is hosted on a private server over HTTP",
+};
+
+export {
+  imageOnChain,
+  metadataOnChain,
+  tokenUriIsIpfs,
+  tokenUriIsHttp,
+  imageUriIsHttp,
+};

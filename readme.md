@@ -22,8 +22,22 @@ Handled metadata structures:
 
 Within each top-level data structure, handle:
 
-- [ ] URLs with IPFS
-- [ ] URLs not IPFS
+- [ ] IPFS
+
+  - Image stored on that IPFS hash
+  - Image stored on anohter IPFS
+  - Image stored on rando server
+
+- [ ] Http
+
+  - Image stored as base64
+  - Image stored on IPFS
+  - Image stored on HTTP
+
+- [ ] JSON
+  - Image stored as base64
+  - Image stored on IPFS
+  - Image stored on HTTP
 
 ## Development
 
