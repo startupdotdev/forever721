@@ -1,10 +1,13 @@
 import { GradeLetter, Severity } from "./constants/enums";
 import * as Reasons from "./constants/reasons";
 
+export const isTokenUriBase64Json = (tokenUri: string): boolean => {
+  return tokenUri.startsWith("data:application/json;base64");
+};
 const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   let reasons: Reason[] = [];
 
-  if (tokenUri.startsWith("data:application/json;base64")) {
+  if (isTokenUriBase64Json(tokenUri)) {
     reasons = [...reasons, Reasons.metadataOnChain];
 
     const encodedData: string = tokenUri.split(
