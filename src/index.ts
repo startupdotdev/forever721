@@ -20,9 +20,9 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
     reasons = [...reasons, Reasons.imageOnChain];
   }
 
-  const scoreSum: number = reasons
-    .map((reason) => reason.severity)
-    .reduce((a, b) => a + b);
+  const scoreSum: number = reasons.reduce((acc, { severity }) => {
+    return acc + severity;
+  }, 0);
   const score: number = scoreSum / reasons.length;
 
   let grade;
