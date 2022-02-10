@@ -37,7 +37,6 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
 
   let res: Metadata = await axios.get(tokenUri);
 
-  console.log(res);
   if (res.image && isTokenUriHttp(res.image)) {
     reasons = [...reasons, Reasons.imageUriIsHttp];
   }
