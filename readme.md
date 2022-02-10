@@ -15,7 +15,7 @@ analyzeMetadata(metaData);
 
 Handled metadata structures:
 
-- [ ] Top-level IPFS
+- [x] Top-level IPFS
 - [x] Top-level base64 encoded json
 - [ ] Top-level some random server
 - [ ] Top-level JSON
