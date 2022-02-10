@@ -2,12 +2,25 @@ import { GradeLetter, Severity } from "./constants/enums";
 import {
   imageOnChain,
   metadataOnChain,
-  tokenUriIsIPFS,
+  tokenUriIsIpfs,
 } from "./constants/reasons";
 
-import { analyzeTokenUri } from "./index";
+import { analyzeTokenUri, isTokenUriBase64Json } from "./index";
 
 import { ALL_ON_CHAIN } from "../tests/fixtures/sample_token_uris";
+
+describe("#isTokenUriBase64Json", () => {
+  test("valid base64", async () => {
+    expect(
+      isTokenUriBase64Json("data:application/json;base64asdlfkjasdlkfjasdf=")
+    ).toBe(true);
+  });
+  test("invalid base64", async () => {
+    expect(
+      isTokenUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
+    ).toBe(false);
+  });
+});
 
 describe("All on chain", () => {
   test("base64 encoded json", async () => {
@@ -36,9 +49,15 @@ describe("IPFS token URI", () => {
     expect(result.reasons.length).toEqual(1);
 
     const reason = result.reasons.find(
-      (reason) => reason.id === tokenUriIsIPFS.id
+      (reason) => reason.id === tokenUriIsIpfs.id
     );
 
-    expect(reason).toMatchObject(tokenUriIsIPFS);
+    expect(reason).toMatchObject(tokenUriIsIpfs);
+  });
+});
+
+describe("No matching formats found", () => {
+  test("TokenUri passed that doesn't match supported format", async () => {
+    await expect(analyzeTokenUri("lazy://falcon.club")).rejects.toThrow();
   });
 });
