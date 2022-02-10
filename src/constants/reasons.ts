@@ -12,10 +12,10 @@ const imageOnChain: Reason = {
   message: "Image is on-chain",
 };
 
-const tokenUriIsIPFS: Reason = {
+const tokenUriIsIpfs: Reason = {
   id: "token-uri-is-ipfs",
   severity: Severity.Good,
   message: "TokenURI is hosted on IPFS",
 };
 
-export { imageOnChain, metadataOnChain, tokenUriIsIPFS };
+export { imageOnChain, metadataOnChain, tokenUriIsIpfs };

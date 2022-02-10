@@ -2,7 +2,7 @@ import { GradeLetter, Severity } from "./constants/enums";
 import {
   imageOnChain,
   metadataOnChain,
-  tokenUriIsIPFS,
+  tokenUriIsIpfs,
 } from "./constants/reasons";
 
 import { analyzeTokenUri, isTokenUriBase64Json } from "./index";
@@ -49,10 +49,10 @@ describe("IPFS token URI", () => {
     expect(result.reasons.length).toEqual(1);
 
     const reason = result.reasons.find(
-      (reason) => reason.id === tokenUriIsIPFS.id
+      (reason) => reason.id === tokenUriIsIpfs.id
     );
 
-    expect(reason).toMatchObject(tokenUriIsIPFS);
+    expect(reason).toMatchObject(tokenUriIsIpfs);
   });
 });
 

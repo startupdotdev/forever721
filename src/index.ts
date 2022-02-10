@@ -33,7 +33,7 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   if (isTokenUriBase64Json(tokenUri)) {
     reasons = handleBase64Json(tokenUri);
   } else if (isTokenUriIpfs(tokenUri)) {
-    reasons = [Reasons.tokenUriIsIPFS];
+    reasons = [Reasons.tokenUriIsIpfs];
   } else {
     throw new Error("Type not supported");
   }
