@@ -35,10 +35,14 @@ export const handleBase64Json = (tokenUri: string): Reason[] => {
 export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
 
+  // TODO: What if this fails?
   let res: Metadata = await axios.get(tokenUri);
 
+  // todo: update that
   if (res.image && isTokenUriIpfs(res.image)) {
     reasons = [...reasons, Reasons.imageUriIsIpfs];
+  } else if (res.image && isTokenUriHttp(res.image)) {
+    reasons = [...reasons, Reasons.imageUriIsHttp];
   }
 
   return reasons;
@@ -47,6 +51,7 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
 export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
+  // TODO: What if this fails?
   let res: Metadata = await axios.get(tokenUri);
 
   if (res.image && isTokenUriHttp(res.image)) {

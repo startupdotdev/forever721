@@ -17,4 +17,4 @@ const IMAGE_IS_IPFS_RESPONSE = {
   attributes: [{ trait_type: "Not Lazy", value: "true" }],
 };
 
-export { ALL_ON_CHAIN, HTTP_WITH_HTTP_RESPONSE, IMAGE_IS_IPFS_RESPONSE };
+export { ALL_ON_CHAIN, IMAGE_IS_HTTP_RESPONSE, IMAGE_IS_IPFS_RESPONSE };

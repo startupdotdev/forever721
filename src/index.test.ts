@@ -88,6 +88,27 @@ describe("IPFS tokenURI", () => {
     expect(reason1).toMatchObject(tokenUriIsIpfs);
     expect(reason2).toMatchObject(imageUriIsIpfs);
   });
+
+  test("with rando server URL for the image", async () => {
+    // @ts-ignore
+    axios.get.mockResolvedValueOnce(IMAGE_IS_HTTP_RESPONSE);
+
+    let result = await analyzeTokenUri("ipfs://blabhalsdkj/1234");
+
+    expect(axios.get).toHaveBeenCalledWith("ipfs://blabhalsdkj/1234");
+    expect(result.grade).toBe(GradeLetter.D);
+    expect(result.reasons.length).toEqual(2);
+
+    const reason1 = result.reasons.find(
+      (reason) => reason.id === tokenUriIsIpfs.id
+    );
+    const reason2 = result.reasons.find(
+      (reason) => reason.id === imageUriIsHttp.id
+    );
+
+    expect(reason1).toMatchObject(tokenUriIsIpfs);
+    expect(reason2).toMatchObject(imageUriIsHttp);
+  });
 });
 
 describe("HTTP link for tokenURI", () => {
