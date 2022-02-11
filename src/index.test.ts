@@ -112,6 +112,27 @@ describe("IPFS tokenURI", () => {
 });
 
 describe("HTTP link for tokenURI", () => {
+  test("with IPFS image URL", async () => {
+    // @ts-ignore
+    axios.get.mockResolvedValueOnce(IMAGE_IS_IPFS_RESPONSE);
+
+    let result = await analyzeTokenUri("https://lazy.llamas/449");
+
+    expect(axios.get).toHaveBeenCalledWith("https://lazy.llamas/449");
+    expect(result.grade).toBe(GradeLetter.D);
+    expect(result.reasons.length).toEqual(2);
+
+    let reason1 = result.reasons.find(
+      (reason) => reason.id === tokenUriIsHttp.id
+    );
+    expect(reason1).toMatchObject(tokenUriIsHttp);
+
+    let reason2 = result.reasons.find(
+      (reason) => reason.id === imageUriIsIpfs.id
+    );
+    expect(reason2).toMatchObject(imageUriIsIpfs);
+  });
+
   test("Random URL at top level results in poor grad", async () => {
     // @ts-ignore
     axios.get.mockResolvedValueOnce(IMAGE_IS_HTTP_RESPONSE);
