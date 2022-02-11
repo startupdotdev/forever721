@@ -20,24 +20,17 @@ Handled metadata structures:
 - [x] Top-level some random server
 - [ ] Top-level JSON
 
-Within each top-level data structure, handle:
+Within each top-level data structure, handles:
 
-- [ ] IPFS
+- IPFS
 
-  - [ ] Image stored on that IPFS hash
-  - [x] Image stored on anohter IPFS
-  - [ ] Image stored on rando server
+  - [x] Image stored on another IPFS
+  - [x] Image stored on rando server
 
-- [ ] Http
+- Http
 
-  - Image stored as base64
-  - Image stored on IPFS
-  - Image stored on HTTP
-
-- [ ] JSON
-  - Image stored as base64
-  - Image stored on IPFS
-  - Image stored on HTTP
+  - [x] Image stored on IPFS
+  - [x] Image stored on HTTP
 
 ## Development
 
@@ -49,6 +42,23 @@ $ npm test
 ## Questions
 
 - Can we know if an IPFS item is pinned?
+
+## Future development
+
+Some extra edge cases to handle:
+
+- IPFS top-level metadtaa
+
+  - [ ] Image stored on that IPFS hash
+
+- Http top-level metadata
+
+  - [ ] Image stored as base64
+
+- JSON top-level metadata
+  - [ ] Image stored as base64
+  - [ ] Image stored on IPFS
+  - [ ] Image stored on HTTP
 
 ## Contributing
 
