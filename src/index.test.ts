@@ -19,6 +19,10 @@ import {
 import axios from "axios";
 jest.mock("axios");
 
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("#isTokenUriBase64Json", () => {
   test("valid base64", async () => {
     expect(
@@ -64,11 +68,6 @@ describe("All on chain", () => {
 });
 
 describe("IPFS tokenURI", () => {
-  // TODO: refactor/cleanup?
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   test("with IPFS URL for the image", async () => {
     // @ts-ignore
     axios.get.mockResolvedValueOnce(IMAGE_IS_IPFS_RESPONSE);
@@ -92,9 +91,6 @@ describe("IPFS tokenURI", () => {
 });
 
 describe("HTTP link for tokenURI", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
   test("Random URL at top level results in poor grad", async () => {
     // @ts-ignore
     axios.get.mockResolvedValueOnce(HTTP_WITH_HTTP_RESPONSE);
