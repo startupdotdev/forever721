@@ -1,5 +1,5 @@
 {
-  "name": "forever721",
+  "name": "@startupdotdev/forever721",
   "version": "1.0.0",
   "description": "Analyze NFT metadata",
   "main": "index.js",
