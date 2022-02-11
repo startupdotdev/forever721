@@ -27,7 +27,13 @@ const tokenUriIsHttp: Reason = {
 const imageUriIsHttp: Reason = {
   id: "image-uri-is-http",
   severity: Severity.Critical,
-  message: "imageURI is hosted on a private server over HTTP",
+  message: "ImageURI is hosted on a private server over HTTP",
+};
+
+const imageUriIsIpfs: Reason = {
+  id: "image-uri-is-ipfs",
+  severity: Severity.Good,
+  message: "ImageURI is hosted on IPFS",
 };
 
 export {
@@ -36,4 +42,5 @@ export {
   tokenUriIsIpfs,
   tokenUriIsHttp,
   imageUriIsHttp,
+  imageUriIsIpfs,
 };

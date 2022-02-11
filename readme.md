@@ -24,9 +24,9 @@ Within each top-level data structure, handle:
 
 - [ ] IPFS
 
-  - Image stored on that IPFS hash
-  - Image stored on anohter IPFS
-  - Image stored on rando server
+  - [ ] Image stored on that IPFS hash
+  - [x] Image stored on anohter IPFS
+  - [ ] Image stored on rando server
 
 - [ ] Http
 

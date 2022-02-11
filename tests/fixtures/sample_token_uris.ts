@@ -9,4 +9,12 @@ const HTTP_WITH_HTTP_RESPONSE = {
   attributes: [{ trait_type: "Lazy", value: "true" }],
 };
 
-export { ALL_ON_CHAIN, HTTP_WITH_HTTP_RESPONSE };
+const IMAGE_IS_IPFS_RESPONSE = {
+  name: "#1234",
+  description: "Not Lazy Noodles",
+  external_url: "#",
+  image: "ipfs://bloopbllooopbloop/1234",
+  attributes: [{ trait_type: "Not Lazy", value: "true" }],
+};
+
+export { ALL_ON_CHAIN, HTTP_WITH_HTTP_RESPONSE, IMAGE_IS_IPFS_RESPONSE };
