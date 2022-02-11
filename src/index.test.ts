@@ -12,7 +12,7 @@ import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
 
 import {
   ALL_ON_CHAIN,
-  HTTP_WITH_HTTP_RESPONSE,
+  IMAGE_IS_HTTP_RESPONSE,
   IMAGE_IS_IPFS_RESPONSE,
 } from "../tests/fixtures/sample_token_uris";
 
@@ -93,7 +93,7 @@ describe("IPFS tokenURI", () => {
 describe("HTTP link for tokenURI", () => {
   test("Random URL at top level results in poor grad", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(HTTP_WITH_HTTP_RESPONSE);
+    axios.get.mockResolvedValueOnce(IMAGE_IS_HTTP_RESPONSE);
     let result = await analyzeTokenUri("https://lazy.llamas/449");
     expect(result.reasons.length).toEqual(2);
     expect(axios.get).toHaveBeenCalledWith("https://lazy.llamas/449");
