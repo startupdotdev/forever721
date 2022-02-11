@@ -22,6 +22,8 @@ Handled metadata structures:
 
 Within each top-level data structure, handles:
 
+- Base64 on-chain
+
 - IPFS
 
   - [x] Image stored on another IPFS
