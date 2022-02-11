@@ -32,6 +32,18 @@ export const handleBase64Json = (tokenUri: string): Reason[] => {
   return reasons;
 };
 
+export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
+  let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
+
+  let res: Metadata = await axios.get(tokenUri);
+
+  if (res.image && isTokenUriIpfs(res.image)) {
+    reasons = [...reasons, Reasons.imageUriIsIpfs];
+  }
+
+  return reasons;
+};
+
 export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
@@ -50,7 +62,7 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   if (isTokenUriBase64Json(tokenUri)) {
     reasons = handleBase64Json(tokenUri);
   } else if (isTokenUriIpfs(tokenUri)) {
-    reasons = [Reasons.tokenUriIsIpfs];
+    reasons = await handleIpfs(tokenUri);
   } else if (isTokenUriHttp(tokenUri)) {
     reasons = await handleHttp(tokenUri);
   } else {

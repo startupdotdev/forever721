@@ -5,6 +5,7 @@ import {
   metadataOnChain,
   tokenUriIsHttp,
   tokenUriIsIpfs,
+  imageUriIsIpfs,
 } from "./constants/reasons";
 
 import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
@@ -12,6 +13,7 @@ import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
 import {
   ALL_ON_CHAIN,
   HTTP_WITH_HTTP_RESPONSE,
+  IMAGE_IS_IPFS_RESPONSE,
 } from "../tests/fixtures/sample_token_uris";
 
 import axios from "axios";
@@ -62,17 +64,30 @@ describe("All on chain", () => {
 });
 
 describe("IPFS tokenURI", () => {
-  test("IPFS url as the top level", async () => {
-    let result = await analyzeTokenUri("ipfs://bafybeic26wp7ck2/1234");
+  // TODO: refactor/cleanup?
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
+  test("with IPFS URL for the image", async () => {
+    // @ts-ignore
+    axios.get.mockResolvedValueOnce(IMAGE_IS_IPFS_RESPONSE);
+
+    let result = await analyzeTokenUri("ipfs://blabhalsdkj/1234");
+
+    expect(axios.get).toHaveBeenCalledWith("ipfs://blabhalsdkj/1234");
     expect(result.grade).toBe(GradeLetter.B);
-    expect(result.reasons.length).toEqual(1);
+    expect(result.reasons.length).toEqual(2);
 
-    const reason = result.reasons.find(
+    const reason1 = result.reasons.find(
       (reason) => reason.id === tokenUriIsIpfs.id
     );
+    const reason2 = result.reasons.find(
+      (reason) => reason.id === imageUriIsIpfs.id
+    );
 
-    expect(reason).toMatchObject(tokenUriIsIpfs);
+    expect(reason1).toMatchObject(tokenUriIsIpfs);
+    expect(reason2).toMatchObject(imageUriIsIpfs);
   });
 });
 
