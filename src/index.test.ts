@@ -8,11 +8,11 @@ import {
   imageUriIsIpfs,
 } from "./constants/reasons";
 
-import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
+import { analyzeTokenUri, isUriBase64Json, isUriHttp } from "./index";
 
 import {
   ALL_ON_CHAIN,
-  HTTP_WITH_HTTP_RESPONSE,
+  IMAGE_IS_HTTP_RESPONSE,
   IMAGE_IS_IPFS_RESPONSE,
 } from "../tests/fixtures/sample_token_uris";
 
@@ -23,28 +23,28 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("#isTokenUriBase64Json", () => {
+describe("#isUriBase64Json", () => {
   test("valid base64", async () => {
     expect(
-      isTokenUriBase64Json("data:application/json;base64asdlfkjasdlkfjasdf=")
+      isUriBase64Json("data:application/json;base64asdlfkjasdlkfjasdf=")
     ).toBe(true);
   });
   test("invalid base64", async () => {
     expect(
-      isTokenUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
+      isUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
     ).toBe(false);
   });
 });
 
-describe("#isTokenUriHttp", () => {
+describe("#isUriHttp", () => {
   test("valid http", async () => {
-    expect(isTokenUriHttp("http://lazy.llamas")).toBe(true);
-    expect(isTokenUriHttp("https://lazy.llamas")).toBe(true);
+    expect(isUriHttp("http://lazy.llamas")).toBe(true);
+    expect(isUriHttp("https://lazy.llamas")).toBe(true);
   });
   test("invalid http", async () => {
-    expect(isTokenUriHttp("ftp://something")).toBe(false);
-    expect(isTokenUriHttp("ipfs://somethingalsdkfjas/1234")).toBe(false);
-    expect(isTokenUriHttp("data:application/json;base64hotdog=")).toBe(false);
+    expect(isUriHttp("ftp://something")).toBe(false);
+    expect(isUriHttp("ipfs://somethingalsdkfjas/1234")).toBe(false);
+    expect(isUriHttp("data:application/json;base64hotdog=")).toBe(false);
   });
 });
 
@@ -88,12 +88,33 @@ describe("IPFS tokenURI", () => {
     expect(reason1).toMatchObject(tokenUriIsIpfs);
     expect(reason2).toMatchObject(imageUriIsIpfs);
   });
+
+  test("with rando server URL for the image", async () => {
+    // @ts-ignore
+    axios.get.mockResolvedValueOnce(IMAGE_IS_HTTP_RESPONSE);
+
+    let result = await analyzeTokenUri("ipfs://blabhalsdkj/1234");
+
+    expect(axios.get).toHaveBeenCalledWith("ipfs://blabhalsdkj/1234");
+    expect(result.grade).toBe(GradeLetter.D);
+    expect(result.reasons.length).toEqual(2);
+
+    const reason1 = result.reasons.find(
+      (reason) => reason.id === tokenUriIsIpfs.id
+    );
+    const reason2 = result.reasons.find(
+      (reason) => reason.id === imageUriIsHttp.id
+    );
+
+    expect(reason1).toMatchObject(tokenUriIsIpfs);
+    expect(reason2).toMatchObject(imageUriIsHttp);
+  });
 });
 
 describe("HTTP link for tokenURI", () => {
   test("Random URL at top level results in poor grad", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(HTTP_WITH_HTTP_RESPONSE);
+    axios.get.mockResolvedValueOnce(IMAGE_IS_HTTP_RESPONSE);
     let result = await analyzeTokenUri("https://lazy.llamas/449");
     expect(result.reasons.length).toEqual(2);
     expect(axios.get).toHaveBeenCalledWith("https://lazy.llamas/449");
