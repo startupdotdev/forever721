@@ -55,6 +55,8 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
 
   if (res.image && isUriHttp(res.image)) {
     reasons = [...reasons, Reasons.imageUriIsHttp];
+  } else if (res.image && isUriIpfs(res.image)) {
+    reasons = [...reasons, Reasons.imageUriIsIpfs];
   }
 
   return reasons;
