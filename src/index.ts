@@ -2,15 +2,15 @@ import { GradeLetter, Severity } from "./constants/enums";
 import * as Reasons from "./constants/reasons";
 import axios from "axios";
 
-export const isTokenUriBase64Json = (tokenUri: string): boolean => {
+export const isUriBase64Json = (tokenUri: string): boolean => {
   return tokenUri.startsWith("data:application/json;base64");
 };
 
-export const isTokenUriIpfs = (tokenUri: string): boolean => {
+export const isUriIpfs = (tokenUri: string): boolean => {
   return tokenUri.startsWith("ipfs");
 };
 
-export const isTokenUriHttp = (tokenUri: string): boolean => {
+export const isUriHttp = (tokenUri: string): boolean => {
   return tokenUri.startsWith("http");
 };
 
@@ -38,10 +38,9 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   // TODO: What if this fails?
   let res: Metadata = await axios.get(tokenUri);
 
-  // todo: update that
-  if (res.image && isTokenUriIpfs(res.image)) {
+  if (res.image && isUriIpfs(res.image)) {
     reasons = [...reasons, Reasons.imageUriIsIpfs];
-  } else if (res.image && isTokenUriHttp(res.image)) {
+  } else if (res.image && isUriHttp(res.image)) {
     reasons = [...reasons, Reasons.imageUriIsHttp];
   }
 
@@ -54,7 +53,7 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   // TODO: What if this fails?
   let res: Metadata = await axios.get(tokenUri);
 
-  if (res.image && isTokenUriHttp(res.image)) {
+  if (res.image && isUriHttp(res.image)) {
     reasons = [...reasons, Reasons.imageUriIsHttp];
   }
 
@@ -64,11 +63,11 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
 const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   let reasons: Reason[] = [];
 
-  if (isTokenUriBase64Json(tokenUri)) {
+  if (isUriBase64Json(tokenUri)) {
     reasons = handleBase64Json(tokenUri);
-  } else if (isTokenUriIpfs(tokenUri)) {
+  } else if (isUriIpfs(tokenUri)) {
     reasons = await handleIpfs(tokenUri);
-  } else if (isTokenUriHttp(tokenUri)) {
+  } else if (isUriHttp(tokenUri)) {
     reasons = await handleHttp(tokenUri);
   } else {
     throw new Error("Token URI format not supported");

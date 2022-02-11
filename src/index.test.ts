@@ -8,7 +8,7 @@ import {
   imageUriIsIpfs,
 } from "./constants/reasons";
 
-import { analyzeTokenUri, isTokenUriBase64Json, isTokenUriHttp } from "./index";
+import { analyzeTokenUri, isUriBase64Json, isUriHttp } from "./index";
 
 import {
   ALL_ON_CHAIN,
@@ -23,28 +23,28 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe("#isTokenUriBase64Json", () => {
+describe("#isUriBase64Json", () => {
   test("valid base64", async () => {
     expect(
-      isTokenUriBase64Json("data:application/json;base64asdlfkjasdlkfjasdf=")
+      isUriBase64Json("data:application/json;base64asdlfkjasdlkfjasdf=")
     ).toBe(true);
   });
   test("invalid base64", async () => {
     expect(
-      isTokenUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
+      isUriBase64Json("data:application/ping;base64asdlfkjasdlkfjasdf=")
     ).toBe(false);
   });
 });
 
-describe("#isTokenUriHttp", () => {
+describe("#isUriHttp", () => {
   test("valid http", async () => {
-    expect(isTokenUriHttp("http://lazy.llamas")).toBe(true);
-    expect(isTokenUriHttp("https://lazy.llamas")).toBe(true);
+    expect(isUriHttp("http://lazy.llamas")).toBe(true);
+    expect(isUriHttp("https://lazy.llamas")).toBe(true);
   });
   test("invalid http", async () => {
-    expect(isTokenUriHttp("ftp://something")).toBe(false);
-    expect(isTokenUriHttp("ipfs://somethingalsdkfjas/1234")).toBe(false);
-    expect(isTokenUriHttp("data:application/json;base64hotdog=")).toBe(false);
+    expect(isUriHttp("ftp://something")).toBe(false);
+    expect(isUriHttp("ipfs://somethingalsdkfjas/1234")).toBe(false);
+    expect(isUriHttp("data:application/json;base64hotdog=")).toBe(false);
   });
 });
 
