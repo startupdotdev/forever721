@@ -4,7 +4,7 @@ Tool to analyze NFT metadata.
 
 ## Why this tool?
 
-While the NFTs themselves may be permanently stored on the blockchain, there are many cases where NFT metadata content can change. 
+While the NFTs themselves may be permanently stored on the blockchain, there are many cases where NFT metadata content can change.
 
 For example: some NFTs' metadata point to random private HTTP URLs and servers which could change the contents or go down at any time. Other NFTs point to IPFS URLs, which is much better but there is still risk of that content becoming unpinned and being discarded from IPFS as well.
 
@@ -15,10 +15,10 @@ This tool analyzes NFT metadata and gives a letter grade (A-F) to its durability
 ### Basic Usage
 
 ```js
-import { analyzeMetadata } from 'forever721`;
-let metaData : JSON | ipfs url | url;
+import { analyzeTokenUri } from '@startupdotdev/forever721';
 
-analyzeMetadata(metaData);
+let metaData : JSON | ipfs url | url;
+analyzeTokenUri(metaData);
 ```
 
 Handled metadata structures:
