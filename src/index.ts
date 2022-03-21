@@ -62,7 +62,7 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   return reasons;
 };
 
-const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
+export const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   let reasons: Reason[] = [];
 
   if (isUriBase64Json(tokenUri)) {
@@ -99,5 +99,3 @@ const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
     reasons: reasons,
   };
 };
-
-export { analyzeTokenUri };
