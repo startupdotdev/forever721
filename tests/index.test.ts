@@ -11,13 +11,14 @@ import {
 } from "../src/constants/reasons";
 
 import {
-  analyzeTokenUri,
-  handleImageUri,
   isUriBase64Json,
-  isUriHttp,
   isUriIpfs,
   isUriIpfsPinningService,
-} from "../src/index";
+  isUriHttp,
+} from "../src/lib/uri-formats";
+
+import { handleImageUri } from "../src//lib/handle-uris";
+import { analyzeTokenUri } from "../src/index";
 
 import {
   ALL_ON_CHAIN,
