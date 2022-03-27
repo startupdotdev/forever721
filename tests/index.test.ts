@@ -10,7 +10,13 @@ import {
   imageUriIsIpfsPinningService,
 } from "../src/constants/reasons";
 
-import { analyzeTokenUri, isUriBase64Json, isUriHttp } from "../src/index";
+import {
+  analyzeTokenUri,
+  isUriBase64Json,
+  isUriHttp,
+  isUriIpfs,
+  isUriIpfsPinningService,
+} from "../src/index";
 
 import {
   ALL_ON_CHAIN,
@@ -50,6 +56,47 @@ describe("#isUriHttp", () => {
     expect(isUriHttp("ftp://something")).toBe(false);
     expect(isUriHttp("ipfs://somethingalsdkfjas/1234")).toBe(false);
     expect(isUriHttp("data:application/json;base64hotdog=")).toBe(false);
+  });
+});
+
+describe("#isUriIpfs", () => {
+  test("ipfs://", async () => {
+    expect(isUriIpfs("ipfs://abcdef/12354.png")).toBe(true);
+
+    expect(isUriIpfs("https://lazy.llamas/ipfs")).toBe(false);
+    expect(isUriIpfs("https://lazy.llamas")).toBe(false);
+  });
+
+  test("ipfs gateway", async () => {
+    expect(isUriIpfs("http://ipfs.io/ipfs/abcdef/12354.png")).toBe(true);
+    expect(isUriIpfs("https://ipfs.io/ipfs/abcdef/12354.png")).toBe(true);
+
+    expect(isUriIpfs("https://lazy.llamas")).toBe(false);
+    expect(isUriIpfs("ftp://something")).toBe(false);
+    expect(isUriIpfs("data:application/json;base64hotdog=")).toBe(false);
+  });
+});
+
+describe("#isUriIpfsPinningService", () => {
+  test("pinning service", async () => {
+    expect(
+      isUriIpfsPinningService("https://ikzttp.mypinata.cloud/ipfs/abcdef/1234")
+    ).toBe(true);
+    expect(isUriIpfsPinningService("https://crust.network/abcdef/1234")).toBe(
+      true
+    );
+
+    expect(
+      isUriIpfsPinningService("http://ipfs.io/ipfs/abcdef/12354.png")
+    ).toBe(false);
+    expect(
+      isUriIpfsPinningService("https://ipfs.io/ipfs/abcdef/12354.png")
+    ).toBe(false);
+    expect(isUriIpfsPinningService("https://lazy.llamas")).toBe(false);
+    expect(isUriIpfsPinningService("ftp://something")).toBe(false);
+    expect(isUriIpfsPinningService("data:application/json;base64hotdog=")).toBe(
+      false
+    );
   });
 });
 
