@@ -36,6 +36,18 @@ const imageUriIsIpfs: Reason = {
   message: "ImageURI is hosted on IPFS",
 };
 
+const tokenUriIsIpfsPinningService: Reason = {
+  id: "token-uri-is-ipfs-pinning-service",
+  severity: Severity.Notice,
+  message: "TokenURI is hosted on an IPFS pinning serivce",
+};
+
+const imageUriIsIpfsPinningService: Reason = {
+  id: "image-uri-is-ipfs-pinning-service",
+  severity: Severity.Notice,
+  message: "ImageURI is hosted on an IPFS pinning service",
+};
+
 export {
   imageOnChain,
   metadataOnChain,
@@ -43,4 +55,6 @@ export {
   tokenUriIsHttp,
   imageUriIsHttp,
   imageUriIsIpfs,
+  tokenUriIsIpfsPinningService,
+  imageUriIsIpfsPinningService,
 };

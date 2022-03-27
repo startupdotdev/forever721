@@ -3,13 +3,15 @@
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "module": "commonjs" /* Specify what module code is generated. */,
+    "module": "ESNext" /* Specify what module code is generated. */,
     "typeRoots": ["src"],
     "types": ["jest", "@types/jest"],
     "esModuleInterop": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "outDir": "build",
+    "moduleResolution": "node",
     // "noImplicitAny": true,                            /* Enable error reporting for expressions and declarations with an implied `any` type.. */
     // "strictNullChecks": true,                         /* When type checking, take into account `null` and `undefined`. */
     // "strictFunctionTypes": true,                      /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
