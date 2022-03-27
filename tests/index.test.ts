@@ -6,6 +6,8 @@ import {
   tokenUriIsHttp,
   tokenUriIsIpfs,
   imageUriIsIpfs,
+  tokenUriIsIpfsPinningService,
+  imageUriIsIpfsPinningService,
 } from "../src/constants/reasons";
 
 import { analyzeTokenUri, isUriBase64Json, isUriHttp } from "../src/index";
@@ -16,6 +18,7 @@ import {
   IMAGE_IS_IPFS_RESPONSE,
   IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE,
   IPFS_GATEWAY_IMAGE_IS_HTTP_RESPONSE,
+  IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE,
 } from "./fixtures/sample_token_uris";
 
 import axios from "axios";
@@ -70,9 +73,31 @@ describe("All on chain", () => {
 });
 
 describe("IPFS pinning service tokenURI", () => {
-  test("with an IPFS HTTP gateway URL", async () => {
-    // TODO handle
-    // https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/1948
+  test("with an IPFS pinning service", async () => {
+    // @ts-ignore
+    axios.get.mockResolvedValueOnce(
+      IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE
+    );
+
+    let result = await analyzeTokenUri(
+      "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/1948"
+    );
+
+    expect(axios.get).toHaveBeenCalledWith(
+      "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/1948"
+    );
+    expect(result.grade).toBe(GradeLetter.C);
+    expect(result.reasons.length).toEqual(2);
+
+    const reason1 = result.reasons.find(
+      (reason) => reason.id === tokenUriIsIpfsPinningService.id
+    );
+    const reason2 = result.reasons.find(
+      (reason) => reason.id === imageUriIsIpfsPinningService.id
+    );
+
+    expect(reason1).toMatchObject(tokenUriIsIpfsPinningService);
+    expect(reason2).toMatchObject(imageUriIsIpfsPinningService);
   });
 });
 

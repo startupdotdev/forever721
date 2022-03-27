@@ -7,11 +7,27 @@ export const isUriBase64Json = (tokenUri: string): boolean => {
 };
 
 export const isUriIpfs = (tokenUri: string): boolean => {
-  return (
-    tokenUri.startsWith("ipfs") ||
-    tokenUri.startsWith("https://ipfs.io/ipfs") ||
-    tokenUri.startsWith("http://ipfs.io/ipfs")
-  );
+  return tokenUri.startsWith("ipfs") || tokenUri.includes("ipfs.io/ipfs");
+};
+
+const ipfsPinningServices = [
+  "mypinata.cloud",
+  "eternum.io",
+  "crust.network",
+  "infura.io",
+  "estuary.tech",
+  "web3.storage",
+  "nft.storage",
+];
+
+export const isUriIpfsPinningService = (tokenUri: string): boolean => {
+  for (let service of ipfsPinningServices) {
+    if (tokenUri.includes(service)) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 export const isUriHttp = (tokenUri: string): boolean => {
@@ -72,6 +88,28 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   return reasons;
 };
 
+export const handleIpfsPinningService = async (
+  tokenUri: string
+): Promise<Reason[]> => {
+  let reasons: Reason[] = [Reasons.tokenUriIsIpfsPinningService];
+
+  // TODO: What if this fails?
+  let { data } = await axios.get(tokenUri);
+
+  let metadata: Metadata = data;
+
+  // TODO: Abstract and use in other image checks too
+  if (metadata.image && isUriIpfs(metadata.image)) {
+    reasons = [...reasons, Reasons.imageUriIsIpfs];
+  } else if (metadata.image && isUriIpfsPinningService(metadata.image)) {
+    reasons = [...reasons, Reasons.imageUriIsIpfsPinningService];
+  } else if (metadata.image && isUriHttp(metadata.image)) {
+    reasons = [...reasons, Reasons.imageUriIsHttp];
+  }
+
+  return reasons;
+};
+
 export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
@@ -94,6 +132,8 @@ export const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
     reasons = handleBase64Json(tokenUri);
   } else if (isUriIpfs(tokenUri)) {
     reasons = await handleIpfs(tokenUri);
+  } else if (isUriIpfsPinningService(tokenUri)) {
+    reasons = await handleIpfsPinningService(tokenUri);
   } else if (isUriHttp(tokenUri)) {
     reasons = await handleHttp(tokenUri);
   } else {

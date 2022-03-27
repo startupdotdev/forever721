@@ -25,10 +25,23 @@ const IPFS_GATEWAY_IMAGE_IS_HTTP_RESPONSE = {
   data: IMAGE_IS_HTTP_RESPONSE,
 };
 
+const IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE = {
+  name: "#5678",
+  description: "Pudgy Pangolins",
+  external_url: "#",
+  image: "https://ikzttp.mypinata.cloud/ipfs/abcdef/5678.png",
+  attributes: [{ trait_type: "Pudgy", value: "true" }],
+};
+
+const IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE = {
+  data: IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE,
+};
+
 export {
   ALL_ON_CHAIN,
   IMAGE_IS_HTTP_RESPONSE,
   IMAGE_IS_IPFS_RESPONSE,
   IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE,
   IPFS_GATEWAY_IMAGE_IS_HTTP_RESPONSE,
+  IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE,
 };
