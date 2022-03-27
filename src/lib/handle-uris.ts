@@ -1,7 +1,7 @@
 import * as Reasons from "../constants/reasons";
 import axios from "axios";
 
-import { rewriteIpfsUrl } from "./utils/ipfs";
+import { rewriteIpfsUrl } from "./ipfs";
 import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./check-uris";
 
 export const handleBase64Json = (tokenUri: string): Reason[] => {
