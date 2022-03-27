@@ -68,6 +68,18 @@ const rewriteIpfsUrl = (url: string): string => {
   return `https://ipfs.io/ipfs/${urlData}`;
 };
 
+export const handleImageUri = (imageUri: string): Reason | null => {
+  if (isUriIpfs(imageUri)) {
+    return Reasons.imageUriIsIpfs;
+  } else if (isUriIpfsPinningService(imageUri)) {
+    return Reasons.imageUriIsIpfsPinningService;
+  } else if (isUriHttp(imageUri)) {
+    return Reasons.imageUriIsHttp;
+  }
+
+  return null;
+};
+
 export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
 
@@ -76,13 +88,14 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
 
   // TODO: What if this fails?
   let { data } = await axios.get(ipfsHttpGatewayUrl);
-
   let metadata: Metadata = data;
 
-  if (metadata.image && isUriIpfs(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfs];
-  } else if (metadata.image && isUriHttp(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsHttp];
+  if (metadata.image) {
+    let imageUriReason: Reason | null = handleImageUri(metadata.image);
+
+    if (imageUriReason) {
+      reasons = [...reasons, imageUriReason];
+    }
   }
 
   return reasons;
@@ -95,16 +108,14 @@ export const handleIpfsPinningService = async (
 
   // TODO: What if this fails?
   let { data } = await axios.get(tokenUri);
-
   let metadata: Metadata = data;
 
-  // TODO: Abstract and use in other image checks too
-  if (metadata.image && isUriIpfs(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfs];
-  } else if (metadata.image && isUriIpfsPinningService(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfsPinningService];
-  } else if (metadata.image && isUriHttp(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsHttp];
+  if (metadata.image) {
+    let imageUriReason: Reason | null = handleImageUri(metadata.image);
+
+    if (imageUriReason) {
+      reasons = [...reasons, imageUriReason];
+    }
   }
 
   return reasons;
@@ -114,12 +125,14 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
   // TODO: What if this fails?
-  let res: Metadata = await axios.get(tokenUri);
+  let metadata: Metadata = await axios.get(tokenUri);
 
-  if (res.image && isUriHttp(res.image)) {
-    reasons = [...reasons, Reasons.imageUriIsHttp];
-  } else if (res.image && isUriIpfs(res.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfs];
+  if (metadata.image) {
+    let imageUriReason: Reason | null = handleImageUri(metadata.image);
+
+    if (imageUriReason) {
+      reasons = [...reasons, imageUriReason];
+    }
   }
 
   return reasons;
