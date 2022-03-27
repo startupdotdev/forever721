@@ -15,9 +15,9 @@ import {
   isUriIpfs,
   isUriIpfsPinningService,
   isUriHttp,
-} from "../src/lib/uri-formats";
+} from "../src/lib/check-uris";
 
-import { handleImageUri } from "../src//lib/handle-uris";
+import { handleImageUri } from "../src/lib/handle-uris";
 import { analyzeTokenUri } from "../src/index";
 
 import {

@@ -5,7 +5,7 @@ import {
   isUriIpfs,
   isUriIpfsPinningService,
   isUriHttp,
-} from "./lib/uri-formats";
+} from "./lib/check-uris";
 
 import {
   handleBase64Json,

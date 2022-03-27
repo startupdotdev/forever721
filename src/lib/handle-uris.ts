@@ -1,7 +1,7 @@
 import * as Reasons from "../constants/reasons";
 import axios from "axios";
 
-import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./uri-formats";
+import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./check-uris";
 
 export const handleBase64Json = (tokenUri: string): Reason[] => {
   let reasons: Reason[] = [Reasons.metadataOnChain];
