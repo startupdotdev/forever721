@@ -7,7 +7,11 @@ export const isUriBase64Json = (tokenUri: string): boolean => {
 };
 
 export const isUriIpfs = (tokenUri: string): boolean => {
-  return tokenUri.startsWith("ipfs");
+  return (
+    tokenUri.startsWith("ipfs") ||
+    tokenUri.startsWith("https://ipfs.io/ipfs") ||
+    tokenUri.startsWith("http://ipfs.io/ipfs")
+  );
 };
 
 export const isUriHttp = (tokenUri: string): boolean => {
@@ -32,15 +36,36 @@ export const handleBase64Json = (tokenUri: string): Reason[] => {
   return reasons;
 };
 
+const rewriteIpfsUrl = (url: string): string => {
+  if (!url || url.startsWith("ipfs://") === false) {
+    return url;
+  }
+
+  // Rewrites:
+  // ipfs://abcde...xyz/1234.png -> https://ipfs.io/ipfs/abcde...xyz/1234.png
+  let ipfsRegex = /ipfs:\/\/(.+)/;
+
+  // @ts-ignore
+  let [_, capture] = ipfsRegex.exec(url);
+  let urlData: string = capture;
+
+  return `https://ipfs.io/ipfs/${urlData}`;
+};
+
 export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
 
-  // TODO: What if this fails?
-  let res: Metadata = await axios.get(tokenUri);
+  // Need to rewrite to a HTTP gateway we can fetch
+  const ipfsHttpGatewayUrl: string = rewriteIpfsUrl(tokenUri);
 
-  if (res.image && isUriIpfs(res.image)) {
+  // TODO: What if this fails?
+  let { data } = await axios.get(ipfsHttpGatewayUrl);
+
+  let metadata: Metadata = data;
+
+  if (metadata.image && isUriIpfs(metadata.image)) {
     reasons = [...reasons, Reasons.imageUriIsIpfs];
-  } else if (res.image && isUriHttp(res.image)) {
+  } else if (metadata.image && isUriHttp(metadata.image)) {
     reasons = [...reasons, Reasons.imageUriIsHttp];
   }
 
