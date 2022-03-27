@@ -1,6 +1,7 @@
 import * as Reasons from "../constants/reasons";
 import axios from "axios";
 
+import { rewriteIpfsUrl } from "./utils/ipfs";
 import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./check-uris";
 
 export const handleBase64Json = (tokenUri: string): Reason[] => {
@@ -19,21 +20,6 @@ export const handleBase64Json = (tokenUri: string): Reason[] => {
   }
 
   return reasons;
-};
-
-const rewriteIpfsUrl = (url: string): string => {
-  if (!url || url.startsWith("ipfs://") === false) {
-    return url;
-  }
-
-  // Rewrites ipfs://abcde...xyz/1234.png -> https://ipfs.io/ipfs/abcde...xyz/1234.png
-  let ipfsRegex = /ipfs:\/\/(.+)/;
-
-  // @ts-ignore
-  let [_, capture] = ipfsRegex.exec(url);
-  let urlData: string = capture;
-
-  return `https://ipfs.io/ipfs/${urlData}`;
 };
 
 export const handleImageUri = (imageUri: string): Reason | null => {
