@@ -1,129 +1,18 @@
 import { GradeLetter, Severity } from "./constants/enums";
-import * as Reasons from "./constants/reasons";
-import axios from "axios";
 
-export const isUriBase64Json = (tokenUri: string): boolean => {
-  return tokenUri.startsWith("data:application/json;base64");
-};
+import {
+  isUriBase64Json,
+  isUriIpfs,
+  isUriIpfsPinningService,
+  isUriHttp,
+} from "./lib/check-uris";
 
-export const isUriIpfs = (tokenUri: string): boolean => {
-  return tokenUri.startsWith("ipfs") || tokenUri.includes("ipfs.io/ipfs");
-};
-
-const ipfsPinningServices = [
-  "mypinata.cloud",
-  "eternum.io",
-  "crust.network",
-  "infura.io",
-  "estuary.tech",
-  "web3.storage",
-  "nft.storage",
-];
-
-export const isUriIpfsPinningService = (tokenUri: string): boolean => {
-  for (let service of ipfsPinningServices) {
-    if (tokenUri.includes(service)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-export const isUriHttp = (tokenUri: string): boolean => {
-  return tokenUri.startsWith("http");
-};
-
-export const handleBase64Json = (tokenUri: string): Reason[] => {
-  let reasons: Reason[] = [Reasons.metadataOnChain];
-
-  const encodedData: string = tokenUri.split("data:application/json;base64")[1];
-  const decodedBuffer: Buffer = Buffer.from(encodedData, "base64");
-  const decodedString: string = decodedBuffer.toString();
-  const json: Metadata = JSON.parse(decodedString);
-
-  // todo: what if no image?
-  const imageAttribute = json.image || "";
-
-  if (imageAttribute.startsWith("data:image")) {
-    reasons = [...reasons, Reasons.imageOnChain];
-  }
-
-  return reasons;
-};
-
-const rewriteIpfsUrl = (url: string): string => {
-  if (!url || url.startsWith("ipfs://") === false) {
-    return url;
-  }
-
-  // Rewrites:
-  // ipfs://abcde...xyz/1234.png -> https://ipfs.io/ipfs/abcde...xyz/1234.png
-  let ipfsRegex = /ipfs:\/\/(.+)/;
-
-  // @ts-ignore
-  let [_, capture] = ipfsRegex.exec(url);
-  let urlData: string = capture;
-
-  return `https://ipfs.io/ipfs/${urlData}`;
-};
-
-export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
-  let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
-
-  // Need to rewrite to a HTTP gateway we can fetch
-  const ipfsHttpGatewayUrl: string = rewriteIpfsUrl(tokenUri);
-
-  // TODO: What if this fails?
-  let { data } = await axios.get(ipfsHttpGatewayUrl);
-
-  let metadata: Metadata = data;
-
-  if (metadata.image && isUriIpfs(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfs];
-  } else if (metadata.image && isUriHttp(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsHttp];
-  }
-
-  return reasons;
-};
-
-export const handleIpfsPinningService = async (
-  tokenUri: string
-): Promise<Reason[]> => {
-  let reasons: Reason[] = [Reasons.tokenUriIsIpfsPinningService];
-
-  // TODO: What if this fails?
-  let { data } = await axios.get(tokenUri);
-
-  let metadata: Metadata = data;
-
-  // TODO: Abstract and use in other image checks too
-  if (metadata.image && isUriIpfs(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfs];
-  } else if (metadata.image && isUriIpfsPinningService(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfsPinningService];
-  } else if (metadata.image && isUriHttp(metadata.image)) {
-    reasons = [...reasons, Reasons.imageUriIsHttp];
-  }
-
-  return reasons;
-};
-
-export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
-  let reasons: Reason[] = [Reasons.tokenUriIsHttp];
-
-  // TODO: What if this fails?
-  let res: Metadata = await axios.get(tokenUri);
-
-  if (res.image && isUriHttp(res.image)) {
-    reasons = [...reasons, Reasons.imageUriIsHttp];
-  } else if (res.image && isUriIpfs(res.image)) {
-    reasons = [...reasons, Reasons.imageUriIsIpfs];
-  }
-
-  return reasons;
-};
+import {
+  handleBase64Json,
+  handleIpfs,
+  handleIpfsPinningService,
+  handleHttp,
+} from "./lib/handle-uris";
 
 export const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
   let reasons: Reason[] = [];

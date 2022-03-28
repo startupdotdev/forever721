@@ -11,12 +11,14 @@ import {
 } from "../src/constants/reasons";
 
 import {
-  analyzeTokenUri,
   isUriBase64Json,
-  isUriHttp,
   isUriIpfs,
   isUriIpfsPinningService,
-} from "../src/index";
+  isUriHttp,
+} from "../src/lib/check-uris";
+
+import { handleImageUri } from "../src/lib/handle-uris";
+import { analyzeTokenUri } from "../src/index";
 
 import {
   ALL_ON_CHAIN,
@@ -97,6 +99,22 @@ describe("#isUriIpfsPinningService", () => {
     expect(isUriIpfsPinningService("data:application/json;base64hotdog=")).toBe(
       false
     );
+  });
+});
+
+describe("#handleImageUri", () => {
+  test("it handles the various Uri formats", async () => {
+    expect(handleImageUri("ipfs://abcdef/1234.png")).toBe(imageUriIsIpfs);
+    expect(handleImageUri("http://ipfs.io/ipfs/abcdef/1234.png")).toBe(
+      imageUriIsIpfs
+    );
+    expect(handleImageUri("https://infura.io/ipfs/abcdef/1234.png")).toBe(
+      imageUriIsIpfsPinningService
+    );
+    expect(handleImageUri("https://api.lazylions.com/1234.png")).toBe(
+      imageUriIsHttp
+    );
+    expect(handleImageUri("unsupported.format/1234.png")).toBe(null);
   });
 });
 

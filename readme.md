@@ -24,6 +24,7 @@ analyzeTokenUri(metaData);
 Handled metadata structures:
 
 - [x] Top-level IPFS
+- [x] Top-level IPFS pinning service
 - [x] Top-level base64 encoded json
 - [x] Top-level some random server
 - [ ] Top-level JSON
@@ -72,4 +73,4 @@ Some extra edge cases to handle:
 
 ## Contributing
 
-TODO
+Submit a PR (with tests!) for formats/edge cases we're missing!
