@@ -1,5 +1,5 @@
 import * as Reasons from "../constants/reasons";
-import axios from "axios";
+import { Buffer } from "buffer";
 
 import { rewriteIpfsUrl } from "./ipfs";
 import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./check-uris";
@@ -34,15 +34,23 @@ export const handleImageUri = (imageUri: string): Reason | null => {
   return null;
 };
 
+// Wrapper function around this behavior to make it easier to stub in the tests.
+// Likely some benefit to excapsulate request logic here too.
+export const fetchMetadata = async (tokenUri: string): Promise<Metadata> => {
+  // TODO: What if this fails?
+  let response = await fetch(tokenUri);
+  let metadata: Metadata = await response.json();
+
+  return metadata;
+};
+
 export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
 
   // Need to rewrite to a HTTP gateway we can fetch
   const ipfsHttpGatewayUrl: string = rewriteIpfsUrl(tokenUri);
 
-  // TODO: What if this fails?
-  let { data } = await axios.get(ipfsHttpGatewayUrl);
-  let metadata: Metadata = data;
+  let metadata: Metadata = await fetchMetadata(ipfsHttpGatewayUrl);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -61,8 +69,7 @@ export const handleIpfsPinningService = async (
   let reasons: Reason[] = [Reasons.tokenUriIsIpfsPinningService];
 
   // TODO: What if this fails?
-  let { data } = await axios.get(tokenUri);
-  let metadata: Metadata = data;
+  let metadata: Metadata = await fetchMetadata(tokenUri);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -78,8 +85,7 @@ export const handleIpfsPinningService = async (
 export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
-  // TODO: What if this fails?
-  let metadata: Metadata = await axios.get(tokenUri);
+  let metadata: Metadata = await fetchMetadata(tokenUri);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
