@@ -15,7 +15,6 @@ import {
 } from "./lib/handle-uris";
 
 export const analyzeTokenUri = async (tokenUri: string): Promise<Grade> => {
-  console.log("analyzing");
   let reasons: Reason[] = [];
 
   if (isUriBase64Json(tokenUri)) {

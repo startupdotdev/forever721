@@ -40,13 +40,7 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   // Need to rewrite to a HTTP gateway we can fetch
   const ipfsHttpGatewayUrl: string = rewriteIpfsUrl(tokenUri);
 
-  // TODO: What if this fails?
-  let response = await fetch(ipfsHttpGatewayUrl);
-  console.log("response", response);
-  let data = await response.json();
-  console.log("data", data);
-  // let { data } = await response.json();
-  let metadata: Metadata = data;
+  let metadata: Metadata = await getIpfsMetadata(ipfsHttpGatewayUrl);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -62,17 +56,10 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
 export const handleIpfsPinningService = async (
   tokenUri: string
 ): Promise<Reason[]> => {
-  console.log("ipfs pinning");
   let reasons: Reason[] = [Reasons.tokenUriIsIpfsPinningService];
 
   // TODO: What if this fails?
-  console.log("tokenuri", tokenUri);
-  let response = await fetch(tokenUri);
-  console.log("response", response);
-  let data = await response.json();
-  console.log("data", data);
-  let metadata: Metadata = data;
-  console.log("metadata", metadata);
+  let metadata: Metadata = await getIpfsMetadata(tokenUri);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -85,12 +72,18 @@ export const handleIpfsPinningService = async (
   return reasons;
 };
 
-export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
-  let reasons: Reason[] = [Reasons.tokenUriIsHttp];
-
+export const getIpfsMetadata = async (tokenUri: string): Promise<Metadata> => {
   // TODO: What if this fails?
   let response = await fetch(tokenUri);
   let metadata: Metadata = await response.json();
+
+  return metadata;
+};
+
+export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
+  let reasons: Reason[] = [Reasons.tokenUriIsHttp];
+
+  let metadata: Metadata = await getHttpMetadata(tokenUri);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -101,4 +94,11 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   }
 
   return reasons;
+};
+
+export const getHttpMetadata = async (tokenUri: string): Promise<Metadata> => {
+  // TODO: What if this fails?
+  let response = await fetch(tokenUri);
+  let metadata: Metadata = await response.json();
+  return metadata;
 };
