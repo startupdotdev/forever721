@@ -1,5 +1,6 @@
 import * as Reasons from "../constants/reasons";
 import fetch from "cross-fetch";
+import { Buffer } from "buffer";
 
 import { rewriteIpfsUrl } from "./ipfs";
 import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./check-uris";
