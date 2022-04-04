@@ -45,6 +45,14 @@ Within each top-level data structure, handles:
 
 ## Development
 
+### Node version
+
+Note: this project uses the [experimental native fetch](https://github.com/nodejs/node/commit/6ec225392675c92b102d3caad02ee3a157c9d1b7) in Node 17.
+
+```
+$ nvm install 17.8.0 --experimental-fetch
+```
+
 ```
 $ npm i
 $ npm test
