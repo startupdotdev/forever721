@@ -133,7 +133,7 @@ describe("All on chain", () => {
 
 describe("IPFS pinning service tokenURI", () => {
   test("with an IPFS pinning service", async () => {
-    const mock = jest.spyOn(HandleUris, "getIpfsMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE
@@ -163,7 +163,7 @@ describe("IPFS pinning service tokenURI", () => {
 
 describe("IPFS tokenURI", () => {
   test("with an IPFS HTTP gateway URL", async () => {
-    const mock = jest.spyOn(HandleUris, "getIpfsMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE
@@ -187,7 +187,7 @@ describe("IPFS tokenURI", () => {
   });
 
   test("rewrites IPFS with IPFS URL for the image", async () => {
-    const mock = jest.spyOn(HandleUris, "getIpfsMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE
@@ -211,7 +211,7 @@ describe("IPFS tokenURI", () => {
   });
 
   test("with IPFS URL for the image", async () => {
-    const mock = jest.spyOn(HandleUris, "getIpfsMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE
@@ -235,7 +235,7 @@ describe("IPFS tokenURI", () => {
   });
 
   test("with rando server URL for the image", async () => {
-    const mock = jest.spyOn(HandleUris, "getIpfsMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IPFS_GATEWAY_IMAGE_IS_HTTP_RESPONSE
@@ -261,7 +261,7 @@ describe("IPFS tokenURI", () => {
 
 describe("HTTP link for tokenURI", () => {
   test("with IPFS image URL", async () => {
-    const mock = jest.spyOn(HandleUris, "getHttpMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IMAGE_IS_IPFS_RESPONSE
@@ -285,7 +285,7 @@ describe("HTTP link for tokenURI", () => {
   });
 
   test("Random URL at top level results in poor grade", async () => {
-    const mock = jest.spyOn(HandleUris, "getHttpMetadata");
+    const mock = jest.spyOn(HandleUris, "fetchMetadata");
     mock.mockImplementation(
       // @ts-ignore
       () => IMAGE_IS_HTTP_RESPONSE

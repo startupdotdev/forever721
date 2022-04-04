@@ -34,13 +34,23 @@ export const handleImageUri = (imageUri: string): Reason | null => {
   return null;
 };
 
+// Wrapper function around this behavior to make it easier to stub in the tests.
+// Likely some benefit to excapsulate request logic here too.
+export const fetchMetadata = async (tokenUri: string): Promise<Metadata> => {
+  // TODO: What if this fails?
+  let response = await fetch(tokenUri);
+  let metadata: Metadata = await response.json();
+
+  return metadata;
+};
+
 export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsIpfs];
 
   // Need to rewrite to a HTTP gateway we can fetch
   const ipfsHttpGatewayUrl: string = rewriteIpfsUrl(tokenUri);
 
-  let metadata: Metadata = await getIpfsMetadata(ipfsHttpGatewayUrl);
+  let metadata: Metadata = await fetchMetadata(ipfsHttpGatewayUrl);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -59,7 +69,7 @@ export const handleIpfsPinningService = async (
   let reasons: Reason[] = [Reasons.tokenUriIsIpfsPinningService];
 
   // TODO: What if this fails?
-  let metadata: Metadata = await getIpfsMetadata(tokenUri);
+  let metadata: Metadata = await fetchMetadata(tokenUri);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -70,20 +80,12 @@ export const handleIpfsPinningService = async (
   }
 
   return reasons;
-};
-
-export const getIpfsMetadata = async (tokenUri: string): Promise<Metadata> => {
-  // TODO: What if this fails?
-  let response = await fetch(tokenUri);
-  let metadata: Metadata = await response.json();
-
-  return metadata;
 };
 
 export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
-  let metadata: Metadata = await getHttpMetadata(tokenUri);
+  let metadata: Metadata = await fetchMetadata(tokenUri);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -94,11 +96,4 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   }
 
   return reasons;
-};
-
-export const getHttpMetadata = async (tokenUri: string): Promise<Metadata> => {
-  // TODO: What if this fails?
-  let response = await fetch(tokenUri);
-  let metadata: Metadata = await response.json();
-  return metadata;
 };
