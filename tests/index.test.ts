@@ -29,8 +29,14 @@ import {
   IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE,
 } from "./fixtures/sample_token_uris";
 
-import axios from "axios";
-jest.mock("axios");
+import fetch from "cross-fetch";
+jest.mock("cross-fetch", () => {
+  //Mock the default export
+  return {
+    __esModule: true,
+    default: jest.fn(),
+  };
+});
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -140,15 +146,18 @@ describe("All on chain", () => {
 describe("IPFS pinning service tokenURI", () => {
   test("with an IPFS pinning service", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(
-      IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE
-    );
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IPFS_PINNING_SERVICE_IMAGE_IS_IPFS_PINNING_SERVICE_RESPONSE;
+      },
+    });
 
     let result = await analyzeTokenUri(
       "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/1948"
     );
 
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(fetch).toHaveBeenCalledWith(
       "https://ikzttp.mypinata.cloud/ipfs/QmQFkLSQysj94s5GvTHPyzTxrawwtjgiiYS2TBLgrvw8CW/1948"
     );
     expect(result.grade).toBe(GradeLetter.C);
@@ -169,13 +178,16 @@ describe("IPFS pinning service tokenURI", () => {
 describe("IPFS tokenURI", () => {
   test("with an IPFS HTTP gateway URL", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE);
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE;
+      },
+    });
 
     let result = await analyzeTokenUri("https://ipfs.io/ipfs/blabhalsdkj/1234");
 
-    expect(axios.get).toHaveBeenCalledWith(
-      "https://ipfs.io/ipfs/blabhalsdkj/1234"
-    );
+    expect(fetch).toHaveBeenCalledWith("https://ipfs.io/ipfs/blabhalsdkj/1234");
     expect(result.grade).toBe(GradeLetter.B);
     expect(result.reasons.length).toEqual(2);
 
@@ -192,13 +204,16 @@ describe("IPFS tokenURI", () => {
 
   test("rewrites IPFS with IPFS URL for the image", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE);
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE;
+      },
+    });
 
     let result = await analyzeTokenUri("ipfs://blabhalsdkj/1234");
 
-    expect(axios.get).toHaveBeenCalledWith(
-      "https://ipfs.io/ipfs/blabhalsdkj/1234"
-    );
+    expect(fetch).toHaveBeenCalledWith("https://ipfs.io/ipfs/blabhalsdkj/1234");
     expect(result.grade).toBe(GradeLetter.B);
     expect(result.reasons.length).toEqual(2);
 
@@ -215,13 +230,16 @@ describe("IPFS tokenURI", () => {
 
   test("with IPFS URL for the image", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE);
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IPFS_GATEWAY_IMAGE_IS_IPFS_RESPONSE;
+      },
+    });
 
     let result = await analyzeTokenUri("ipfs://blabhalsdkj/1234");
 
-    expect(axios.get).toHaveBeenCalledWith(
-      "https://ipfs.io/ipfs/blabhalsdkj/1234"
-    );
+    expect(fetch).toHaveBeenCalledWith("https://ipfs.io/ipfs/blabhalsdkj/1234");
     expect(result.grade).toBe(GradeLetter.B);
     expect(result.reasons.length).toEqual(2);
 
@@ -238,13 +256,16 @@ describe("IPFS tokenURI", () => {
 
   test("with rando server URL for the image", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(IPFS_GATEWAY_IMAGE_IS_HTTP_RESPONSE);
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IPFS_GATEWAY_IMAGE_IS_HTTP_RESPONSE;
+      },
+    });
 
     let result = await analyzeTokenUri("ipfs://blabhalsdkj/1234");
 
-    expect(axios.get).toHaveBeenCalledWith(
-      "https://ipfs.io/ipfs/blabhalsdkj/1234"
-    );
+    expect(fetch).toHaveBeenCalledWith("https://ipfs.io/ipfs/blabhalsdkj/1234");
     expect(result.grade).toBe(GradeLetter.D);
     expect(result.reasons.length).toEqual(2);
 
@@ -263,11 +284,16 @@ describe("IPFS tokenURI", () => {
 describe("HTTP link for tokenURI", () => {
   test("with IPFS image URL", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(IMAGE_IS_IPFS_RESPONSE);
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IMAGE_IS_IPFS_RESPONSE;
+      },
+    });
 
     let result = await analyzeTokenUri("https://lazy.llamas/449");
 
-    expect(axios.get).toHaveBeenCalledWith("https://lazy.llamas/449");
+    expect(fetch).toHaveBeenCalledWith("https://lazy.llamas/449");
     expect(result.grade).toBe(GradeLetter.D);
     expect(result.reasons.length).toEqual(2);
 
@@ -282,12 +308,18 @@ describe("HTTP link for tokenURI", () => {
     expect(reason2).toMatchObject(imageUriIsIpfs);
   });
 
-  test("Random URL at top level results in poor grad", async () => {
+  test("Random URL at top level results in poor grade", async () => {
     // @ts-ignore
-    axios.get.mockResolvedValueOnce(IMAGE_IS_HTTP_RESPONSE);
+    fetch.mockResolvedValueOnce({
+      status: 200,
+      json: () => {
+        return IMAGE_IS_HTTP_RESPONSE;
+      },
+    });
+
     let result = await analyzeTokenUri("https://lazy.llamas/449");
     expect(result.reasons.length).toEqual(2);
-    expect(axios.get).toHaveBeenCalledWith("https://lazy.llamas/449");
+    expect(fetch).toHaveBeenCalledWith("https://lazy.llamas/449");
     expect(result.grade).toBe(GradeLetter.F);
 
     let reason1 = result.reasons.find(

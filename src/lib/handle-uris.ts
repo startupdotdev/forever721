@@ -1,5 +1,5 @@
 import * as Reasons from "../constants/reasons";
-import axios from "axios";
+import fetch from "cross-fetch";
 
 import { rewriteIpfsUrl } from "./ipfs";
 import { isUriIpfs, isUriIpfsPinningService, isUriHttp } from "./check-uris";
@@ -41,7 +41,11 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
   const ipfsHttpGatewayUrl: string = rewriteIpfsUrl(tokenUri);
 
   // TODO: What if this fails?
-  let { data } = await axios.get(ipfsHttpGatewayUrl);
+  let response = await fetch(ipfsHttpGatewayUrl);
+  console.log("response", response);
+  let data = await response.json();
+  console.log("data", data);
+  // let { data } = await response.json();
   let metadata: Metadata = data;
 
   if (metadata.image) {
@@ -58,11 +62,17 @@ export const handleIpfs = async (tokenUri: string): Promise<Reason[]> => {
 export const handleIpfsPinningService = async (
   tokenUri: string
 ): Promise<Reason[]> => {
+  console.log("ipfs pinning");
   let reasons: Reason[] = [Reasons.tokenUriIsIpfsPinningService];
 
   // TODO: What if this fails?
-  let { data } = await axios.get(tokenUri);
+  console.log("tokenuri", tokenUri);
+  let response = await fetch(tokenUri);
+  console.log("response", response);
+  let data = await response.json();
+  console.log("data", data);
   let metadata: Metadata = data;
+  console.log("metadata", metadata);
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
@@ -79,7 +89,8 @@ export const handleHttp = async (tokenUri: string): Promise<Reason[]> => {
   let reasons: Reason[] = [Reasons.tokenUriIsHttp];
 
   // TODO: What if this fails?
-  let metadata: Metadata = await axios.get(tokenUri);
+  let response = await fetch(tokenUri);
+  let metadata: Metadata = await response.json();
 
   if (metadata.image) {
     let imageUriReason: Reason | null = handleImageUri(metadata.image);
