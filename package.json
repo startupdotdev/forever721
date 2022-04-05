@@ -1,6 +1,6 @@
 {
   "name": "@startupdotdev/forever721",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Analyze NFT metadata",
   "main": "./dist/bundle.js",
   "module": "./dist/bundle.es.js",

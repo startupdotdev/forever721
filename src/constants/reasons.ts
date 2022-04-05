@@ -39,7 +39,7 @@ const imageUriIsIpfs: Reason = {
 const tokenUriIsIpfsPinningService: Reason = {
   id: "token-uri-is-ipfs-pinning-service",
   severity: Severity.Notice,
-  message: "TokenURI is hosted on an IPFS pinning serivce",
+  message: "TokenURI is hosted on an IPFS pinning service",
 };
 
 const imageUriIsIpfsPinningService: Reason = {
